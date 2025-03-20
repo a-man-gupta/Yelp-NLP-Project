@@ -1,8 +1,14 @@
 import json
 import sqlite3
+import os
 
-# Connect to SQLite database
-conn = sqlite3.connect("reviews_data.db")  # New database for reviews
+# Ensure the directory exists
+db_folder = "../databases"  # Relative path to the databases folder from the script's location
+os.makedirs(db_folder, exist_ok=True)
+
+# Connect to SQLite database in the specified folder
+db_path = os.path.join(db_folder, "reviews_data.db")
+conn = sqlite3.connect(db_path)
 cursor = conn.cursor()
 
 # Create table for reviews data
@@ -53,7 +59,7 @@ def load_reviews_data(json_file):
                 print(f"Error inserting data into database: {e}")
 
 # Load your reviews JSON file into the database
-load_reviews_data("yelp_academic_dataset_review.json")  # Replace with the actual JSON file path
+load_reviews_data("../yelp_academic_dataset_review.json")  # Replace with the actual JSON file path
 
 # Commit changes and close connection
 conn.commit()

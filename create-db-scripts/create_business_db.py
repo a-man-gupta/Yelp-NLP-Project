@@ -1,8 +1,14 @@
 import json
 import sqlite3
+import os
 
-# Connect to SQLite database
-conn = sqlite3.connect("business_data.db")
+# Ensure the directory exists
+db_folder = "../databases"  # Relative path to the databases folder from the script's location
+os.makedirs(db_folder, exist_ok=True)
+
+# Connect to SQLite database in the specified folder
+db_path = os.path.join(db_folder, "business_data.db")
+conn = sqlite3.connect(db_path)
 cursor = conn.cursor()
 
 # Create tables based on the schema
@@ -56,7 +62,7 @@ def load_data(json_file):
                 print(f"Error inserting data into database: {e}")
 
 # Load your JSON file into the database
-load_data("yelp_academic_dataset_business.json")  # Replace with the actual JSON file path
+load_data("../yelp_academic_dataset_business.json")  # Replace with the actual JSON file path
 
 # Commit changes and close connection
 conn.commit()

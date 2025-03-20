@@ -1,8 +1,14 @@
 import json
 import sqlite3
+import os
 
-# Connect to SQLite database
-conn = sqlite3.connect("checkin_data.db")
+# Ensure the directory exists
+db_folder = "../databases"  # Relative path to the databases folder from the script's location
+os.makedirs(db_folder, exist_ok=True)
+
+# Connect to SQLite database in the specified folder
+db_path = os.path.join(db_folder, "checkin_data.db")
+conn = sqlite3.connect(db_path)
 cursor = conn.cursor()
 
 # Create table for check-in data
@@ -34,7 +40,7 @@ def load_checkin_data(json_file):
                 print(f"Error inserting data into database: {e}")
 
 # Load your check-in JSON file into the database
-load_checkin_data("yelp_academic_dataset_checkin.json")  # Replace with the actual JSON file path
+load_checkin_data("../yelp_academic_dataset_checkin.json")  # Replace with the actual JSON file path
 
 # Commit changes and close connection
 conn.commit()

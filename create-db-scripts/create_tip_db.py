@@ -1,8 +1,14 @@
 import json
 import sqlite3
+import os
 
-# Connect to SQLite database
-conn = sqlite3.connect("tips_data.db")  # New database for tips
+# Ensure the directory exists
+db_folder = "../databases"  # Relative path to the databases folder from the script's location
+os.makedirs(db_folder, exist_ok=True)
+
+# Connect to SQLite database in the specified folder
+db_path = os.path.join(db_folder, "tips_data.db")
+conn = sqlite3.connect(db_path)
 cursor = conn.cursor()
 
 # Create table for tips data
@@ -43,7 +49,7 @@ def load_tips_data(json_file):
                 print(f"Error inserting data into database: {e}")
 
 # Load your tips JSON file into the database
-load_tips_data("yelp_academic_dataset_tip.json")  # Replace with the actual JSON file path
+load_tips_data("../yelp_academic_dataset_tip.json")  # Replace with the actual JSON file path
 
 # Commit changes and close connection
 conn.commit()
