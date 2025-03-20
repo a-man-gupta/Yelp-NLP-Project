@@ -2,7 +2,7 @@
 import sqlite3
 
 # Connect to your reviews database
-conn = sqlite3.connect("reviews_data.db")  # Ensure you're using the correct database file
+conn = sqlite3.connect("../databases/reviews_data.db")  # Ensure you're using the correct database file
 cursor = conn.cursor()
 
 # Example 1: Query all reviews for a specific business ID

@@ -1,7 +1,7 @@
 import sqlite3
 
 # Connect to your database
-conn = sqlite3.connect("checkin_data.db")  # Ensure you're using the correct database file
+conn = sqlite3.connect("../databases/checkin_data.db")  # Ensure you're using the correct database file
 cursor = conn.cursor()
 
 # Example: Query check-in data for a specific business_id

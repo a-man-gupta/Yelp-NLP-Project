@@ -1,7 +1,7 @@
 import sqlite3
 
 # Connect to your database
-conn = sqlite3.connect("business_data.db")
+conn = sqlite3.connect("../databases/business_data.db")
 cursor = conn.cursor()
 
 # Example: Query businesses in a specific city

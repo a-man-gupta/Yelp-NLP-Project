@@ -1,7 +1,7 @@
 import sqlite3
 
 # Connect to your users database
-conn = sqlite3.connect("users_data.db")  # Ensure you're using the correct database file
+conn = sqlite3.connect("../databases/users_data.db")  # Ensure you're using the correct database file
 cursor = conn.cursor()
 
 # Example: Query a user's details by user_id
