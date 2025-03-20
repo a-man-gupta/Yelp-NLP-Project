@@ -1,5 +1,4 @@
 .venv
 **.json
-**.tar
 **.db
 **-journal

@@ -6,6 +6,7 @@ This repository contains scripts to create and test SQLite databases from Yelp d
 
 - Python 3.x
 - `virtualenv` package
+- unzip yelp_dataset.tar
 
 ## Setup
 
