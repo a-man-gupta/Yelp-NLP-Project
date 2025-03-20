@@ -45,7 +45,7 @@ This repository contains scripts to create and test SQLite databases from Yelp d
 
 ## Creating Databases
 
-The following scripts are used to create SQLite databases from Yelp dataset JSON files:
+The following scripts are used to create SQLite databases in 'create-db-scripts' folder from Yelp dataset JSON files:
 
 - `create_business_db.py`
 - `create_checkin_db.py`
@@ -67,7 +67,7 @@ python create_business_db.py
 
 ## Testing Databases
 
-The following scripts are used to test the created SQLite databases:
+The following scripts in 'test-db-scripts' folder are used to test the created SQLite databases:
 
 - `test_business_db.py`
 - `test_checkin_db.py`
