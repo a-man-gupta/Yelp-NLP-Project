@@ -2,3 +2,6 @@
 **.json
 **.db
 **-journal
+**/node_modules
+**/_pycache
+**/__pycache__

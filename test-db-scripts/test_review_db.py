@@ -7,13 +7,13 @@ cursor = conn.cursor()
 
 # Example 1: Query all reviews for a specific business ID
 business_id = "XQfwVwDr-v0ZS3_CbbE5Xw"  # Replace with your desired business ID
-cursor.execute("SELECT stars, text, date FROM review WHERE business_id = ?", (business_id,))
+cursor.execute("SELECT * FROM review WHERE business_id = ? LIMIT 1", (business_id,))
 
 # Fetch and display results
 results = cursor.fetchall()
-print(f"Reviews for business ID '{business_id}':")
-for stars, text, date in results:
-    print(f"Stars: {stars}, Date: {date}\nReview: {text}\n")
+print(f"Reviews for business ID '{results}':")
+# for stars, text, date in results:
+#     print(f"Stars: {stars}, Date: {date}\nReview: {text}\n")
 
 # Example 2: Find the average star rating for a specific business
 cursor.execute("SELECT AVG(stars) AS average_rating FROM review WHERE business_id = ?", (business_id,))
