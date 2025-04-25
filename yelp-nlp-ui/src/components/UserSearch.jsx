@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Tile from './Tile';
 
-function BusinessSearch({ onSelect }) {
+function UserSearch({ onSelect }) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [page, setPage] = useState(1);
@@ -10,7 +10,7 @@ function BusinessSearch({ onSelect }) {
   useEffect(() => {
     if (query.length > 1) {
       axios
-        .get(`/api/businesses?query=${query}&page=${page}&limit=10`)
+        .get(`/api/users?query=${query}&page=${page}&limit=5`)
         .then(res => setResults(res.data));
     } else {
       setResults([]);
@@ -21,7 +21,7 @@ function BusinessSearch({ onSelect }) {
     <div className="search-panel">
       <input
         className="search-bar"
-        placeholder="Search businesses..."
+        placeholder="Search users..."
         value={query}
         onChange={e => {
           setQuery(e.target.value);
@@ -29,8 +29,8 @@ function BusinessSearch({ onSelect }) {
         }}
       />
       <div className="tile-container">
-        {results.map(b => (
-          <Tile key={b.business_id} item={b} onClick={onSelect} isBusiness />
+        {results.map(u => (
+          <Tile key={u.user_id} item={u} onClick={onSelect} isBusiness={false} />
         ))}
       </div>
       {results.length > 0 && (
@@ -44,4 +44,4 @@ function BusinessSearch({ onSelect }) {
   );
 }
 
-export default BusinessSearch;
+export default UserSearch;

@@ -14,17 +14,22 @@ const businessDB = new sqlite3.Database(path.join(__dirname, "../databases/busin
 const reviewsDB = new sqlite3.Database(path.join(__dirname, "../databases/reviews_data.db"));
 const usersDB = new sqlite3.Database(path.join(__dirname, "../databases/users_data.db"));
 
-// --- Business Search ---
+// --- Business Search (Updated for Pagination) ---
 app.get("/api/businesses", (req, res) => {
   const query = req.query.query || "";
+  const page = parseInt(req.query.page) || 1; // Default page is 1
+  const limit = parseInt(req.query.limit) || 10; // Default limit is 10
+  
+  const offset = (page - 1) * limit;
+  
   const sql = `
     SELECT b.business_id, b.name, b.address
     FROM business_fts fts
     JOIN business b ON b.rowid = fts.rowid
     WHERE fts.name MATCH ?
-    LIMIT 10
+    LIMIT ? OFFSET ?
   `;
-  businessDB.all(sql, [query + "*"], (err, rows) => {
+  businessDB.all(sql, [query + "*", limit, offset], (err, rows) => {
     if (err) {
       return res.status(500).json({ error: err.message });
     }
@@ -32,35 +37,29 @@ app.get("/api/businesses", (req, res) => {
   });
 });
 
-// --- User Search ---
+// --- User Search (Updated for Pagination) ---
 app.get("/api/users", (req, res) => {
-  const { query } = req.query;
-  const sql = `SELECT user_id, name, review_count FROM user WHERE name LIKE ? LIMIT 10`;
-  usersDB.all(sql, [`%${query}%`], (err, rows) => {
-    if (err) return res.status(500).json({ error: err.message });
+  const query = req.query.query || "";
+  const page = parseInt(req.query.page) || 1; // Default page is 1
+  const limit = parseInt(req.query.limit) || 10; // Default limit is 10
+  
+  const offset = (page - 1) * limit;
+  
+  const sql = `
+    SELECT u.user_id, u.name, u.review_count
+    FROM users_fts fts
+    JOIN user u ON u.rowid = fts.rowid
+    WHERE fts.name MATCH ?
+    LIMIT ? OFFSET ?
+  `;
+  usersDB.all(sql, [query + "*", limit, offset], (err, rows) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
     res.json(rows);
   });
 });
 
-// --- Get Reviews for a Business ---
-app.get("/api/reviews/:businessId", (req, res) => {
-  const { businessId } = req.params;
-  const sql = `SELECT review_id, text, stars, useful, funny, cool FROM review WHERE business_id = ? LIMIT 5`;
-  reviewsDB.all(sql, [businessId], (err, rows) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json(rows);
-  });
-});
-
-// --- Get User Details ---
-app.get("/api/user/:userId", (req, res) => {
-  const { userId } = req.params;
-  const sql = `SELECT name, review_count, yelping_since, useful, funny, cool, elite FROM user WHERE user_id = ?`;
-  usersDB.get(sql, [userId], (err, row) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json(row);
-  });
-});
 
 // --- Start Server ---
 app.listen(PORT, () => {
