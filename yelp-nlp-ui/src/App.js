@@ -21,3 +21,4 @@ function App() {
 export default App;
 
 // import React from 'react'; 
+// $env:NODE_OPTIONS="--openssl-legacy-provider"
