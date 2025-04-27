@@ -2,9 +2,13 @@ const express = require("express");
 const cors = require("cors");
 const sqlite3 = require("sqlite3").verbose();
 const path = require("path");
+const axios = require("axios"); // Added axios import
 
 const app = express();
 const PORT = 5000;
+
+// Environment variables (optional, for flexibility)
+const PYTHON_API_URL = process.env.PYTHON_API_URL || "http://localhost:8000";
 
 app.use(cors());
 app.use(express.json());
@@ -17,8 +21,8 @@ const usersDB = new sqlite3.Database(path.join(__dirname, "../databases/users_da
 // --- Business Search (Updated for Pagination) ---
 app.get("/api/businesses", (req, res) => {
   const query = req.query.query || "";
-  const page = parseInt(req.query.page) || 1; // Default page is 1
-  const limit = parseInt(req.query.limit) || 5; // Default limit is 10
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 5;
   
   const offset = (page - 1) * limit;
   
@@ -40,8 +44,8 @@ app.get("/api/businesses", (req, res) => {
 // --- User Search (Updated for Pagination) ---
 app.get("/api/users", (req, res) => {
   const query = req.query.query || "";
-  const page = parseInt(req.query.page) || 1; // Default page is 1
-  const limit = parseInt(req.query.limit) || 10; // Default limit is 10
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
   
   const offset = (page - 1) * limit;
   
@@ -60,6 +64,35 @@ app.get("/api/users", (req, res) => {
   });
 });
 
+// --- Proxy to Python Predict Ratings API ---
+app.post("/api/predict-ratings", async (req, res) => {
+  const { business_id, user_id, review_text } = req.body;
+  if (!business_id || !user_id || !review_text) {
+    return res.status(400).json({ error: "Missing required fields: business_id, user_id, review_text" });
+  }
+  try {
+    const response = await axios.post(`${PYTHON_API_URL}/predict-ratings`, req.body);
+    res.json(response.data);
+  } catch (error) {
+    console.error("Predict Ratings Error:", error.message); // Added logging
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// --- Proxy to Python Generate Review API ---
+app.post("/api/generate-review", async (req, res) => {
+  const { business_id, user_id, helpful_text } = req.body;
+  if (!business_id || !user_id || !helpful_text) {
+    return res.status(400).json({ error: "Missing required fields: business_id, user_id, helpful_text" });
+  }
+  try {
+    const response = await axios.post(`${PYTHON_API_URL}/generate-review`, req.body);
+    res.json(response.data);
+  } catch (error) {
+    console.error("Generate Review Error:", error.message); // Added logging
+    res.status(500).json({ error: error.message });
+  }
+});
 
 // --- Start Server ---
 app.listen(PORT, () => {

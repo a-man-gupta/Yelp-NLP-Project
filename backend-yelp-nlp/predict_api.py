@@ -1,46 +1,83 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
-import torch
+import random
 
 app = FastAPI()
 
-# Dummy model loading – replace with real ones
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model = AutoModelForSequenceClassification.from_pretrained('distilbert-base-uncased').to(device)
-tokenizer = AutoTokenizer.from_pretrained('distilbert-base-uncased')
+# Enable CORS to allow requests from the frontend (React app)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # Adjust to match your frontend URL
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-# Define request schemas
-class ReviewRequest(BaseModel):
-    user_id: str
+# Define input data models
+class RatingRequest(BaseModel):
     business_id: str
+    user_id: str
     review_text: str
 
-class GenerateRequest(BaseModel):
-    user_id: str
+class ReviewRequest(BaseModel):
     business_id: str
-    experience_description: str
+    user_id: str
+    helpful_text: str
 
-@app.post("/predict")
-def predict_scores(data: ReviewRequest):
-    # Tokenize and move input to device
-    inputs = tokenizer(data.review_text, return_tensors="pt", truncation=True, padding=True).to(device)
-    
-    # Dummy output – replace with inference from your 3 trained models
-    # Here we simulate the output as probabilities from 0 to 1
-    dummy_output = torch.tensor([[0.8, 0.6, 0.9]])  # [funny, cool, useful]
+# First API: Predict Ratings (funny, useful, cool)
+@app.post("/predict-ratings")
+async def predict_ratings(request: RatingRequest):
+    try:
+        # Dummy implementation: Return random ratings between 0 and 5
+        funny = random.randint(0, 5)
+        useful = random.randint(0, 5)
+        cool = random.randint(0, 5)
 
-    # Scale to 0–5 and convert to JSON
-    scaled = (dummy_output * 5).squeeze().tolist()
-    return {
-        "funny": round(scaled[0], 2),
-        "cool": round(scaled[1], 2),
-        "useful": round(scaled[2], 2)
-    }
+        # In the future, replace with model inference, e.g.:
+        # model = joblib.load("path/to/ratings_model.pkl")
+        # features = preprocess_review_text(request.review_text)  # Tokenize, embed, etc.
+        # prediction = model.predict(features)
+        # funny, useful, cool = prediction[0]
 
-@app.post("/generate")
-def generate_review(data: GenerateRequest):
-    # Dummy generation – replace with your generative model's output
-    fake_review = f"{data.experience_description} It was a truly memorable visit at {data.business_id}!"
+        return {
+            "business_id": request.business_id,
+            "user_id": request.user_id,
+            "ratings": {
+                "funny": funny,
+                "useful": useful,
+                "cool": cool
+            }
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error predicting ratings: {str(e)}")
 
-    return {"generated_review": fake_review}
+# Second API: Generate Review
+@app.post("/generate-review")
+async def generate_review(request: ReviewRequest):
+    try:
+        # Dummy implementation: Return a template-based review
+        review_text = (
+            f"Based on my experience at the business (ID: {request.business_id}), "
+            f"I found it to be {request.helpful_text.lower()}. "
+            "The service was great, and I would recommend it to others!"
+        )
+
+        # In the future, replace with generative AI, e.g.:
+        # from transformers import pipeline
+        # generator = pipeline("text-generation", model="gpt2")
+        # prompt = f"Generate a review for business {request.business_id} by user {request.user_id}: {request.helpful_text}"
+        # review_text = generator(prompt, max_length=100)[0]["generated_text"]
+
+        return {
+            "business_id": request.business_id,
+            "user_id": request.user_id,
+            "generated_review": review_text
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error generating review: {str(e)}")
+
+# Run the server with: uvicorn predict_api:app --host 0.0.0.0 --port 8000
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
