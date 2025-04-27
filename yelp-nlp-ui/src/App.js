@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import BusinessSearch from './components/BusinessSearch';
 import UserSearch from './components/UserSearch';
 import PredictRatings from './components/PredictRatings';
+import GenerateReview from './components/GenerateReview';
 import './App.css';
 
 function App() {
@@ -29,7 +30,7 @@ function App() {
 
   return (
     <div className="app-container">
-      <div className="title">Yelp NLP Search</div>
+      <div className="title">Yelp NLP Challenge - The Best One</div>
       <div className="search-bar-container">
         <BusinessSearch onSelect={handleBusinessSelect} />
         <UserSearch onSelect={handleUserSelect} />
@@ -40,8 +41,16 @@ function App() {
           userId={selectedUser?.value} // Correct: value contains user_id
         />
       </div>
+      <div className="generate-review-wrapper">
+        <GenerateReview
+          businessId={selectedBusiness?.value}
+          userId={selectedUser?.value}
+        />
+      </div>
     </div>
   );
 }
 
 export default App;
+
+// $env:NODE_OPTIONS="--openssl-legacy-provider"
