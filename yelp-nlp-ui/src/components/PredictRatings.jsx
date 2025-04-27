@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { RadialBarChart, RadialBar, ResponsiveContainer, PolarAngleAxis } from 'recharts';
 import './PredictRatings.css';
 
 function PredictRatings({ businessId, userId }) {
@@ -12,7 +12,6 @@ function PredictRatings({ businessId, userId }) {
     e.preventDefault();
     setError(null);
 
-    // Validate inputs
     if (!businessId) {
       setError('Please select a business.');
       return;
@@ -50,54 +49,63 @@ function PredictRatings({ businessId, userId }) {
     }
   };
 
-  // Prepare data for histograms
+  // Prepare data for radial charts
   const chartData = ratings
     ? [
-        { name: 'Funny', value: ratings.funny },
-        { name: 'Useful', value: ratings.useful },
-        { name: 'Cool', value: ratings.cool },
+        { name: 'Funny', value: ratings.funny, fill: '#ff6b6b' },
+        { name: 'Useful', value: ratings.useful, fill: '#4ecdc4' },
+        { name: 'Cool', value: ratings.cool, fill: '#45b7d1' },
       ]
     : [];
 
   return (
     <div className="predict-ratings-container">
-      <form onSubmit={handleSubmit} className="review-form">
-        <textarea
-          value={reviewText}
-          onChange={(e) => setReviewText(e.target.value)}
-          placeholder="Enter your review text here..."
-          className="review-textarea"
-          rows="4"
-        />
-        <button type="submit" className="submit-button" disabled={isLoading}>
-          {isLoading ? 'Submitting...' : 'Predict Ratings'}
-        </button>
-      </form>
-      {error && <div className="error-message">{error}</div>}
-      {ratings && (
-        <div className="ratings-charts">
-          <h3>Predicted Ratings</h3>
-          <div className="charts-container">
-            {chartData.map((data, index) => (
-              <div className="chart" key={data.name}>
-                <h4>{data.name}</h4>
-                <ResponsiveContainer width="100%" height={100}>
-                  <BarChart data={[data]} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis domain={[0, 5]} ticks={[0, 1, 2, 3, 4, 5]} />
-                    <Tooltip />
-                    <Bar
-                      dataKey="value"
-                      fill={index === 0 ? '#ff6b6b' : index === 1 ? '#4ecdc4' : '#45b7d1'}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            ))}
-          </div>
+      <div className="predict-ratings-row">
+        <div className="review-form-container">
+          <form onSubmit={handleSubmit} className="review-form">
+            <textarea
+              value={reviewText}
+              onChange={(e) => setReviewText(e.target.value)}
+              placeholder="Enter your review text here..."
+              className="review-textarea"
+              rows="4"
+            />
+            <button type="submit" className="submit-button" disabled={isLoading}>
+              {isLoading ? 'Submitting...' : 'Predict Ratings'}
+            </button>
+          </form>
+          {error && <div className="error-message">{error}</div>}
         </div>
-      )}
+        {ratings && (
+          <div className="ratings-charts">
+            <div className="charts-container">
+              {chartData.map((data, index) => (
+                <div className="chart" key={data.name}>
+                  <h4>{data.name}: {data.value}</h4>
+                  <ResponsiveContainer width="100%" height={120}>
+                    <RadialBarChart
+                      innerRadius="20%"
+                      outerRadius="80%"
+                      data={[{ ...data, value: (data.value / 5) * 100 }]}
+                      startAngle={90}
+                      endAngle={-270}
+                    >
+                      <RadialBar
+                        minAngle={15}
+                        background
+                        clockWise
+                        dataKey="value"
+                        fill={data.fill}
+                      />
+                      <PolarAngleAxis type="number" domain={[0, 100]} tick={false} />
+                    </RadialBarChart>
+                  </ResponsiveContainer>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
