@@ -1,45 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Tile from './Tile';
+import Select from 'react-select';
 
-function UserSearch({ onSelect }) {
+function UserSearch() {
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState([]);
-  const [page, setPage] = useState(1);
+  const [options, setOptions] = useState([]);
 
   useEffect(() => {
-    if (query.length > 1) {
+    if (query.length > 2) {
       axios
-        .get(`/api/users?query=${query}&page=${page}&limit=5`)
-        .then(res => setResults(res.data));
-    } else {
-      setResults([]);
+        .get(`/api/users?query=${query}`)
+        .then((res) => {
+          const formatted = res.data.map((u) => ({
+            value: u.user_id,
+            label: `${u.name} (ID: ${u.user_id}, Reviews: ${u.review_count})`, // Include user_id and review_count
+          }));
+          setOptions(formatted);
+        });
     }
-  }, [query, page]);
+  }, [query]);
 
   return (
-    <div className="search-panel">
-      <input
-        className="search-bar"
-        placeholder="Search users..."
-        value={query}
-        onChange={e => {
-          setQuery(e.target.value);
-          setPage(1); // reset page
-        }}
+    <div className="full-width-search">
+      <Select
+        options={options}
+        onInputChange={(val) => setQuery(val)}
+        onChange={(option) => console.log('Selected User:', option)}
+        placeholder="Search Users..."
+        isClearable
+        isSearchable
       />
-      <div className="tile-container">
-        {results.map(u => (
-          <Tile key={u.user_id} item={u} onClick={onSelect} isBusiness={false} />
-        ))}
-      </div>
-      {results.length > 0 && (
-        <div className="pagination">
-          <button onClick={() => setPage(p => Math.max(1, p - 1))}>Prev</button>
-          <span>Page {page}</span>
-          <button onClick={() => setPage(p => p + 1)}>Next</button>
-        </div>
-      )}
     </div>
   );
 }

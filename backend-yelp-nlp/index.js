@@ -18,7 +18,7 @@ const usersDB = new sqlite3.Database(path.join(__dirname, "../databases/users_da
 app.get("/api/businesses", (req, res) => {
   const query = req.query.query || "";
   const page = parseInt(req.query.page) || 1; // Default page is 1
-  const limit = parseInt(req.query.limit) || 10; // Default limit is 10
+  const limit = parseInt(req.query.limit) || 5; // Default limit is 10
   
   const offset = (page - 1) * limit;
   
