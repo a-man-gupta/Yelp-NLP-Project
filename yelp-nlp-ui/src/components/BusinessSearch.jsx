@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Select from 'react-select';
 
-function BusinessSearch() {
+function BusinessSearch({ onSelect }) {
   const [query, setQuery] = useState('');
   const [options, setOptions] = useState([]);
 
@@ -13,10 +13,11 @@ function BusinessSearch() {
         .then((res) => {
           const formatted = res.data.map((b) => ({
             value: b.business_id,
-            label: `${b.name} - ${b.address}`, // Include address in the label
+            label: `${b.name} - ${b.address}`,
           }));
           setOptions(formatted);
-        });
+        })
+        .catch((err) => console.error('Business search error:', err));
     }
   }, [query]);
 
@@ -25,7 +26,10 @@ function BusinessSearch() {
       <Select
         options={options}
         onInputChange={(val) => setQuery(val)}
-        onChange={(option) => console.log('Selected Business:', option)}
+        onChange={(option) => {
+          console.log('BusinessSearch selected:', option); // Keep for debugging
+          onSelect(option); // Call the onSelect prop
+        }}
         placeholder="Search Businesses..."
         isClearable
         isSearchable

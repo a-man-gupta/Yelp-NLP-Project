@@ -1,23 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import BusinessSearch from './components/BusinessSearch';
 import UserSearch from './components/UserSearch';
+import PredictRatings from './components/PredictRatings';
 import './App.css';
 
 function App() {
-  // State to store selected business and user
   const [selectedBusiness, setSelectedBusiness] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
 
-  // Handlers to update selected values
   const handleBusinessSelect = (option) => {
+    console.log('handleBusinessSelect called with:', option);
     setSelectedBusiness(option);
-    console.log('Selected Business:', option);
   };
 
   const handleUserSelect = (option) => {
+    console.log('handleUserSelect called with:', option);
     setSelectedUser(option);
-    console.log('Selected User:', option);
   };
+
+  // Debug: Log state changes
+  useEffect(() => {
+    console.log('State updated:', { selectedBusiness, selectedUser });
+    console.log('Passing to PredictRatings:', {
+      businessId: selectedBusiness?.value,
+      userId: selectedUser?.value,
+    });
+  }, [selectedBusiness, selectedUser]);
 
   return (
     <div className="app-container">
@@ -26,11 +34,12 @@ function App() {
         <BusinessSearch onSelect={handleBusinessSelect} />
         <UserSearch onSelect={handleUserSelect} />
       </div>
-      {/* Optional: Display selected values for debugging */}
-      {selectedBusiness && (
-        <div>Selected Business: {selectedBusiness.label}</div>
-      )}
-      {selectedUser && <div>Selected User: {selectedUser.label}</div>}
+      <div className="predict-ratings-wrapper">
+        <PredictRatings
+          businessId={selectedBusiness?.value} // Correct: value contains business_id
+          userId={selectedUser?.value} // Correct: value contains user_id
+        />
+      </div>
     </div>
   );
 }

@@ -55,3 +55,17 @@ body {
   white-space: normal; /* Allow text to wrap */
   word-wrap: break-word; /* Break long words if needed */
 }
+
+.predict-ratings-wrapper {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  justify-content: flex-start;
+  padding: 0 20px;
+}
+
+.debug-info {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #555;
+}

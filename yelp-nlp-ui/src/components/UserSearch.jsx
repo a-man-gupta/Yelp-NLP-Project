@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Select from 'react-select';
 
-function UserSearch() {
+function UserSearch({ onSelect }) {
   const [query, setQuery] = useState('');
   const [options, setOptions] = useState([]);
 
@@ -13,10 +13,11 @@ function UserSearch() {
         .then((res) => {
           const formatted = res.data.map((u) => ({
             value: u.user_id,
-            label: `${u.name} (ID: ${u.user_id}, Reviews: ${u.review_count})`, // Include user_id and review_count
+            label: `${u.name} (ID: ${u.user_id}, Reviews: ${u.review_count})`,
           }));
           setOptions(formatted);
-        });
+        })
+        .catch((err) => console.error('User search error:', err));
     }
   }, [query]);
 
@@ -25,7 +26,10 @@ function UserSearch() {
       <Select
         options={options}
         onInputChange={(val) => setQuery(val)}
-        onChange={(option) => console.log('Selected User:', option)}
+        onChange={(option) => {
+          console.log('UserSearch selected:', option); // Keep for debugging
+          onSelect(option); // Call the onSelect prop
+        }}
         placeholder="Search Users..."
         isClearable
         isSearchable

@@ -1,0 +1,73 @@
+.predict-ratings-container {
+    width: 100%;
+    max-width: 500px; /* Match search bar width */
+    padding: 20px;
+    align-self: flex-start; /* Align to the left */
+    margin-left: 20px; /* Small offset to align with search bars */
+  }
+  
+  .review-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .review-textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    resize: vertical;
+    box-sizing: border-box;
+  }
+  
+  .submit-button {
+    padding: 10px 20px;
+    background-color: #d32323;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    align-self: flex-start;
+  }
+  
+  .submit-button:hover {
+    background-color: #b51f1f;
+  }
+  
+  .submit-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+  
+  .error-message {
+    color: #d32323;
+    font-size: 14px;
+    margin-top: 10px;
+  }
+  
+  .ratings-charts {
+    margin-top: 20px;
+    width: 100%;
+  }
+  
+  .charts-container {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+  
+  .chart {
+    flex: 1;
+    min-width: 120px;
+    max-width: 150px; /* Smaller histograms to fit compactly */
+  }
+  
+  .chart h4 {
+    margin: 0 0 8px;
+    font-size: 14px;
+    text-align: center;
+  }
