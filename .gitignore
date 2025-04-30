@@ -5,3 +5,7 @@
 **/node_modules
 **/_pycache
 **/__pycache__
+funny_model/
+useful_model/
+cool_model/
+fine_tuned_gpt2/

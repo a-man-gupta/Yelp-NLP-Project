@@ -5,3 +5,6 @@ fastapi
 uvicorn 
 pydantic 
 requests
+transformers
+numpy
+torch
