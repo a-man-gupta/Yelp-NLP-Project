@@ -95,16 +95,16 @@ python test-db-scripts/test_business_db.py
 
 The repository includes a full-stack Yelp NLP application with three components: a Python inference API, a Node.js backend, and a React frontend.
 
-### 1. Inference API (`inference-api`)
+### 1. Inference API (`ML-AI`)
 
-The `inference-api` directory contains `predict_api.py`, which provides APIs for predicting ratings and generating reviews.
+The `ML-AI` directory contains `predict_api.py`, which provides APIs for predicting ratings and generating reviews.
 
 **Setup and Run**:
 
 1. Navigate to the directory:
 
     ```sh
-    cd inference-api
+    cd ML-AI
     ```
 
 2. Ensure dependencies are installed (already done via `requirements.txt`).
@@ -117,16 +117,16 @@ The `inference-api` directory contains `predict_api.py`, which provides APIs for
 
 The API will be available at `http://localhost:8000`.
 
-### 2. Node.js Backend (`backend-yelp-nlp`)
+### 2. Node.js Backend (`backend`)
 
-The `backend-yelp-nlp` directory contains a Node.js server that proxies requests to the inference API and serves the frontend.
+The `backend` directory contains a Node.js server that proxies requests to the inference API and serves the frontend.
 
 **Setup and Run**:
 
 1. Navigate to the directory:
 
     ```sh
-    cd backend-yelp-nlp
+    cd backend
     ```
 
 2. Initialize and install dependencies:
@@ -143,16 +143,16 @@ The `backend-yelp-nlp` directory contains a Node.js server that proxies requests
 
 The backend will typically run on `http://localhost:3000` (check `index.js` for the port).
 
-### 3. React Frontend (`yelp-nlp-ui`)
+### 3. React Frontend (`yelp`)
 
-The `yelp-nlp-ui` directory contains a React application for interacting with the Yelp NLP APIs. It allows users to search for businesses and users, submit review text for rating predictions, and generate reviews based on helpful text.
+The `yelp` directory contains a React application for interacting with the Yelp NLP APIs. It allows users to search for businesses and users, submit review text for rating predictions, and generate reviews based on helpful text.
 
 **Setup and Run**:
 
 1. Navigate to the directory:
 
     ```sh
-    cd yelp-nlp-ui
+    cd yelp
     ```
 
 2. Install dependencies:
