@@ -60,20 +60,33 @@ async def predict_ratings(request: RatingRequest):
             userful_outputs = userful_model(**userful_inputs)
             userful_predictions = userful_outputs.logits
             useful_probs = np.argmax(userful_predictions, axis=1)
+            if abs(userful_predictions[0][0]) > abs(userful_predictions[0][1]):
+                useful_probs = [0]
+            else:
+                useful_probs = [1]
             useful_score = useful_probs[0]  # Assuming the second class is "useful"
 
         with torch.no_grad():
             funny_outputs = funny_model(**funny_inputs)
             funny_predictions = funny_outputs.logits
             funny_probs = np.argmax(funny_predictions, axis=1)
+            if abs(funny_predictions[0][0]) > abs(funny_predictions[0][1]):
+                funny_probs = [0]
+            else:
+                funny_probs = [1]
             funny_score = funny_probs[0]  # Assuming the second class is "funny"
 
         with torch.no_grad():
             cool_outputs = cool_model(**cool_inputs)
             cool_predictions = cool_outputs.logits
             cool_probs = np.argmax(cool_predictions, axis=1)
+            if abs(cool_predictions[0][0]) > abs(cool_predictions[0][1]):
+                cool_probs = [0]
+            else:
+                cool_probs = [1]
             cool_score = cool_probs[0]  # Assuming the second class is "cool"
 
+        print(userful_predictions)
         print(f"Useful Score: {useful_score}, Funny Score: {funny_score}, Cool Score: {cool_score}")
 
         return {
@@ -83,6 +96,9 @@ async def predict_ratings(request: RatingRequest):
             "funny": 5 if int(funny_score) == 1 else 0,
             "useful": 5 if int(useful_score) == 1 else 0,
             "cool": 5 if int(cool_score) == 1 else 0
+            # "funny": funny,
+            # "useful": useful,
+            # "cool": cool
             }
         }
     except Exception as e:
